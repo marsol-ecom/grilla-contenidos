@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marsol · Grilla de Contenidos HORECA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --az-900:#001F3D;--az-700:#002952;--az-600:#002E5D;--az-500:#15406B;
+  --az-400:#5D80A2;--az-200:#BCCCDC;--az-100:#DBE5F0;--az-25:#ECF3FB;
+  --ae-700:#3660E7;--ae-500:#6D8BEE;--ae-200:#A4B7F4;--ae-100:#C8D4F9;--ae-25:#EDF1FD;
+  --rc-700:#EA4853;--rc-600:#EC5F68;--rc-500:#F07F87;--rc-200:#F6B6BA;--rc-100:#FBDADD;--rc-25:#FDEDEE;
+  --sa-700:#F27069;--sa-600:#F48882;--sa-100:#FCDBD9;
+  --n-dark:#181D27;--n-dk2:#414651;--n-mid:#535862;--n-gray:#717680;
+  --n-lite:#A4A7AE;--n-off:#E9EAEB;--n-f5:#F5F5F5;--n-fd:#FDFDFD;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:#ECEEF2;color:var(--n-dark);font-size:14px;}
+.app{display:flex;flex-direction:column;height:100vh;}
+.topbar{background:var(--az-700);padding:0 22px;display:flex;align-items:center;gap:14px;height:50px;flex-shrink:0;border-bottom:1px solid var(--az-600);}
+.brand{display:flex;align-items:center;gap:9px;color:#fff;font-size:14px;font-weight:500;}
+.brand-dot{width:7px;height:7px;border-radius:50%;background:var(--rc-600);}
+.brand-sub{font-size:11px;color:var(--az-200);font-weight:400;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.badge-total{background:var(--rc-700);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.btn-top{border:none;border-radius:6px;padding:6px 13px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:500;font-family:inherit;}
+.btn-top.primary{background:var(--rc-600);color:#fff;}
+.btn-top.primary:hover{background:var(--rc-700);}
+.btn-top.ghost{background:rgba(255,255,255,0.08);color:var(--az-100);border:1px solid rgba(255,255,255,0.15);}
+.btn-top.ghost:hover{background:rgba(255,255,255,0.14);}
+.tab-row{background:var(--az-600);display:flex;padding:0 22px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.tab{padding:9px 15px;font-size:12px;color:var(--az-200);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;transition:all .15s;user-select:none;}
+.tab i{font-size:14px;}
+.tab:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.tab.active{color:#fff;border-bottom-color:var(--rc-500);}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.panel{display:none;flex:1;overflow:auto;padding:16px 20px;}
+.panel.active{display:flex;flex-direction:column;gap:11px;}
+
+/* FILTER BAR */
+.filter-bar{background:#fff;border:0.5px solid var(--n-off);border-radius:8px;padding:9px 13px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;flex-shrink:0;}
+.fsel{font-size:12px;padding:4px 8px;border:0.5px solid var(--az-200);border-radius:6px;background:#fff;color:var(--n-dk2);cursor:pointer;height:28px;font-family:inherit;}
+.fsel:focus{outline:none;border-color:var(--ae-700);}
+.fsearch{font-size:12px;padding:4px 8px;border:0.5px solid var(--az-200);border-radius:6px;color:var(--n-dk2);height:28px;width:150px;font-family:inherit;}
+.fsearch:focus{outline:none;border-color:var(--ae-700);}
+.fdiv{width:1px;height:18px;background:var(--n-off);}
+.ml{margin-left:auto;}
+.btn-add{background:var(--rc-600);color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:500;font-family:inherit;white-space:nowrap;}
+.btn-add:hover{background:var(--rc-700);}
+
+/* CALENDARIO */
+.cal-wrap{flex:1;display:flex;flex-direction:column;gap:9px;min-height:0;}
+.cal-nav{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.cal-nav-title{font-size:15px;font-weight:500;color:var(--az-600);min-width:170px;}
+.cal-nav-btn{background:#fff;border:0.5px solid var(--az-200);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--az-500);display:flex;align-items:center;}
+.cal-nav-btn:hover{background:var(--az-25);}
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;}
+.cal-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--n-gray);}
+.cal-legend-dot{width:8px;height:8px;border-radius:2px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1;min-height:0;}
+.cal-header{text-align:center;font-size:10px;font-weight:600;color:var(--n-gray);padding:5px 0;text-transform:uppercase;letter-spacing:.06em;}
+.cal-day{min-height:115px;background:#fff;border:0.5px solid var(--n-off);border-radius:5px;padding:5px;cursor:pointer;transition:border-color .1s;}
+.cal-day:hover{border-color:var(--ae-500);}
+.cal-day.today{border-color:var(--ae-700);background:var(--ae-25);}
+.cal-day.other-month{background:var(--n-f5);opacity:.35;pointer-events:none;}
+.cal-day-num{font-size:10px;color:var(--n-gray);font-weight:600;margin-bottom:3px;font-family:'DM Mono',monospace;}
+.cal-day.today .cal-day-num{color:var(--ae-700);}
+.cal-chip{display:block;margin-bottom:2px;border-radius:3px;cursor:pointer;overflow:hidden;border-left:3px solid transparent;transition:opacity .1s;}
+.cal-chip:hover{opacity:.8;}
+.cal-chip-inner{padding:2px 4px 3px;}
+.cal-chip-title{font-size:9px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.cal-chip-tags{display:flex;gap:2px;flex-wrap:wrap;}
+.cal-tag{font-size:8px;font-weight:600;padding:0 3px;border-radius:2px;white-space:nowrap;line-height:1.7;}
+.cal-more{background:var(--n-off);color:var(--n-mid);font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;display:block;margin-top:1px;}
+/* canal chips */
+.c-igfb{background:#FEF0F4;border-left-color:#C13584;}.c-igfb .cal-chip-title{color:#C13584;}
+.c-mail{background:var(--az-25);border-left-color:var(--az-500);}.c-mail .cal-chip-title{color:var(--az-600);}
+.c-paid{background:#EEF2FF;border-left-color:var(--ae-700);}.c-paid .cal-chip-title{color:var(--ae-700);}
+.c-banner{background:#FFF8F0;border-left-color:var(--sa-700);}.c-banner .cal-chip-title{color:#B85400;}
+.c-carweb{background:#F0FAF0;border-left-color:#388E3C;}.c-carweb .cal-chip-title{color:#2E7D32;}
+/* tag colors */
+.tag-igfb{background:#FDCFE8;color:#880E4F;}
+.tag-mail{background:var(--az-200);color:var(--az-700);}
+.tag-paid{background:var(--ae-200);color:#1A3BB5;}
+.tag-banner{background:var(--sa-100);color:#8B4500;}
+.tag-carweb{background:#A5D6A7;color:#1B5E20;}
+.tag-seg{background:rgba(0,0,0,.06);color:var(--n-mid);}
+.tag-fmt{background:rgba(93,128,162,.15);color:var(--az-500);}
+
+/* CAMPAÑAS */
+.camp-card{background:#fff;border:0.5px solid var(--n-off);border-radius:8px;overflow:hidden;margin-bottom:6px;}
+.camp-card-head{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;user-select:none;border-bottom:0.5px solid transparent;transition:background .1s;}
+.camp-card-head:hover{background:var(--az-25);}
+.camp-card.open .camp-card-head{border-bottom-color:var(--n-off);background:var(--az-25);}
+.camp-name{font-size:13px;font-weight:500;color:var(--az-600);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.camp-segs{display:flex;gap:3px;flex-wrap:wrap;flex-shrink:0;}
+.seg-pill{font-size:10px;padding:1px 7px;border-radius:20px;background:var(--az-100);color:var(--az-600);font-weight:500;white-space:nowrap;}
+.camp-acc-count{font-size:11px;color:var(--n-gray);background:var(--n-f5);padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.camp-status-lbl{font-size:11px;color:var(--n-gray);white-space:nowrap;flex-shrink:0;}
+.chevron{font-size:14px;color:var(--n-lite);transition:transform .2s;flex-shrink:0;}
+.camp-card.open .chevron{transform:rotate(90deg);}
+.camp-body{display:none;padding:12px 14px;}
+.camp-card.open .camp-body{display:block;}
+.camp-act-table{width:100%;border-collapse:collapse;font-size:12px;}
+.camp-act-table th{text-align:left;font-size:10px;font-weight:600;color:var(--n-gray);text-transform:uppercase;letter-spacing:.04em;padding:5px 8px;border-bottom:0.5px solid var(--n-off);}
+.camp-act-table td{padding:6px 8px;border-bottom:0.5px solid var(--n-f5);vertical-align:middle;}
+.camp-act-table tr:last-child td{border-bottom:none;}
+.camp-act-table tr:hover td{background:var(--az-25);}
+.camp-footer{display:flex;gap:7px;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--n-off);}
+.btn-sm{background:none;border:0.5px solid var(--az-200);border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--az-500);display:flex;align-items:center;gap:4px;font-family:inherit;}
+.btn-sm:hover{background:var(--az-25);}
+.btn-sm.danger{color:var(--rc-700);border-color:var(--rc-200);}
+.btn-sm.danger:hover{background:var(--rc-25);}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sd-borrador{background:var(--n-lite);}
+.sd-produccion{background:#F9A825;}
+.sd-listo{background:#43A047;}
+.sd-publicado{background:var(--az-400);}
+
+/* DASHBOARD */
+.dash-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:8px;flex-shrink:0;}
+.mc{background:#fff;border-radius:8px;padding:12px 14px;border:0.5px solid var(--n-off);border-left:3px solid var(--az-400);}
+.mc.rc{border-left-color:var(--rc-600);}
+.mc.ae{border-left-color:var(--ae-700);}
+.mc.gr{border-left-color:#43A047;}
+.mc.am{border-left-color:#F9A825;}
+.mc-label{font-size:10px;color:var(--n-gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+.mc-val{font-size:24px;font-weight:500;color:var(--az-600);font-family:'DM Mono',monospace;}
+.mc.rc .mc-val{color:var(--rc-700);}
+.mc.ae .mc-val{color:var(--ae-700);}
+.mc.gr .mc-val{color:#2E7D32;}
+.mc.am .mc-val{color:#F57F17;}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.chart-card{background:#fff;border:0.5px solid var(--n-off);border-radius:8px;padding:14px;}
+.chart-title{font-size:10px;font-weight:600;color:var(--az-500);margin-bottom:11px;text-transform:uppercase;letter-spacing:.05em;}
+.bar-item{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.bar-lbl{width:95px;color:var(--n-mid);font-size:11px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:7px;background:var(--n-off);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-cnt{width:22px;color:var(--n-dark);font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.seg-item{background:var(--az-25);border-radius:5px;padding:8px 10px;border:0.5px solid var(--az-100);}
+.seg-name{font-size:9px;color:var(--az-400);margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.seg-val{font-size:18px;font-weight:500;color:var(--az-600);font-family:'DM Mono',monospace;}
+.prog-item{margin-bottom:9px;}
+.prog-label{font-size:11px;color:var(--n-mid);margin-bottom:3px;display:flex;justify-content:space-between;}
+.prog-track{height:6px;background:var(--n-off);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,18,46,.62);z-index:200;align-items:flex-start;justify-content:center;padding:36px 16px;overflow:auto;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:700px;max-width:100%;flex-shrink:0;overflow:hidden;margin-bottom:40px;}
+.modal-head{background:var(--az-600);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{color:#fff;font-size:13px;font-weight:500;}
+.modal-close{background:none;border:none;color:var(--az-200);cursor:pointer;font-size:19px;line-height:1;}
+.modal-body{padding:17px;display:flex;flex-direction:column;gap:13px;}
+.flabel{font-size:10px;color:var(--n-gray);font-weight:600;margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.04em;}
+.finput{width:100%;padding:7px 10px;border:0.5px solid var(--az-200);border-radius:6px;font-size:13px;color:var(--n-dk2);font-family:inherit;}
+.finput:focus{outline:none;border-color:var(--ae-700);}
+
+/* Multi-check pills */
+.multi-check-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.mck{display:flex;align-items:center;gap:5px;padding:4px 10px;border:0.5px solid var(--az-200);border-radius:20px;cursor:pointer;font-size:11px;color:var(--n-dk2);user-select:none;transition:all .12s;}
+.mck:hover{border-color:var(--ae-700);color:var(--ae-700);}
+.mck input{display:none;}
+.mck.checked{background:var(--ae-700);border-color:var(--ae-700);color:#fff;}
+
+/* Sección acciones */
+.accion-head{display:grid;grid-template-columns:1fr 1fr 150px 95px auto;gap:7px;padding:0 10px 4px;}
+.accion-head-lbl{font-size:9px;font-weight:600;color:var(--n-gray);text-transform:uppercase;letter-spacing:.04em;}
+.acciones-wrap{display:flex;flex-direction:column;gap:5px;}
+.accion-row{display:grid;grid-template-columns:1fr 1fr 150px 95px auto;gap:7px;align-items:center;background:var(--n-f5);border-radius:6px;padding:6px 10px;border:0.5px solid var(--n-off);}
+.accion-row select,.accion-row input{font-size:12px;padding:4px 7px;border:0.5px solid var(--az-200);border-radius:5px;background:#fff;font-family:inherit;width:100%;}
+.accion-row select:focus,.accion-row input:focus{outline:none;border-color:var(--ae-700);}
+.btn-del-ac{background:none;border:none;cursor:pointer;color:var(--n-lite);padding:3px;border-radius:4px;}
+.btn-del-ac:hover{color:var(--rc-700);}
+.btn-add-ac{background:none;border:0.5px dashed var(--az-200);border-radius:6px;padding:7px;font-size:11px;cursor:pointer;color:var(--az-400);width:100%;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .12s;}
+.btn-add-ac:hover{border-color:var(--ae-700);color:var(--ae-700);background:var(--ae-25);}
+
+.modal-footer{padding:11px 17px;border-top:0.5px solid var(--n-off);display:flex;gap:8px;justify-content:flex-end;}
+.btn-cancel{background:none;border:0.5px solid var(--n-off);border-radius:6px;padding:7px 15px;font-size:12px;cursor:pointer;color:var(--n-mid);font-family:inherit;}
+.btn-save{background:var(--az-600);color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:12px;cursor:pointer;font-weight:500;font-family:inherit;}
+.btn-save:hover{background:var(--az-700);}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--az-600);color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:7px;}
+.toast.show{opacity:1;}
+.empty-state{text-align:center;padding:50px;color:var(--n-lite);font-size:13px;}
+.empty-state i{font-size:36px;display:block;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <div class="brand"><div class="brand-dot"></div>Marsol<span class="brand-sub"> · Grilla de Contenidos HORECA</span></div>
+  <div class="topbar-right">
+    <span class="badge-total" id="total-badge">—</span>
+    <button class="btn-top ghost" onclick="loadFromSheet()" title="Recargar desde Google Sheets"><i class="ti ti-refresh"></i> Actualizar</button>
+    <button class="btn-top ghost" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar</button>
+    <button class="btn-top primary" onclick="openModal()"><i class="ti ti-plus"></i> Nueva campaña</button>
+  </div>
+</div>
+
+<div class="tab-row">
+  <div class="tab active" id="tab-cal" onclick="switchTab('cal')"><i class="ti ti-calendar-month"></i> Calendario</div>
+  <div class="tab" id="tab-camp" onclick="switchTab('camp')"><i class="ti ti-speakerphone"></i> Campañas</div>
+  <div class="tab" id="tab-dash" onclick="switchTab('dash')"><i class="ti ti-chart-bar"></i> Dashboard</div>
+</div>
+
+<div class="main">
+
+<!-- CALENDARIO -->
+<div class="panel active" id="panel-cal">
+  <div class="filter-bar">
+    <select class="fsel" id="f-canal-cal" onchange="renderCal()">
+      <option value="">Todos los canales</option>
+      <option value="igfb">Instagram/FB</option>
+      <option value="mail">Mail</option>
+      <option value="paid">Paid Media</option>
+      <option value="banner">Banner web</option>
+      <option value="carweb">Carrusel web</option>
+    </select>
+    <select class="fsel" id="f-seg-cal" onchange="renderCal()">
+      <option value="">Todos los segmentos</option>
+      <option value="Restaurantes">Restaurantes</option>
+      <option value="Heladería">Heladería</option>
+      <option value="Panadería">Panadería</option>
+      <option value="Pastelería">Pastelería</option>
+      <option value="Lavandería">Lavandería</option>
+      <option value="Tienda de conveniencia">Tienda de conveniencia</option>
+      <option value="Otros HORECA">Otros HORECA</option>
+      <option value="Fast Food">Fast Food</option>
+      <option value="Cadenas">Cadenas</option>
+      <option value="Hoteles">Hoteles</option>
+    </select>
+    <select class="fsel" id="f-fmt-cal" onchange="renderCal()">
+      <option value="">Todos los formatos</option>
+      <option value="Storie">Storie</option>
+      <option value="Post">Post</option>
+      <option value="Reels">Reels</option>
+      <option value="Video">Video</option>
+      <option value="Banner">Banner</option>
+    </select>
+    <div class="fdiv"></div>
+    <div class="cal-legend">
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#C13584"></div>Inst/FB</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--az-400)"></div>Mail</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--ae-700)"></div>Paid</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--sa-700)"></div>Banner</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#388E3C"></div>Car.web</div>
+    </div>
+    <button class="btn-add ml" onclick="openModal()"><i class="ti ti-plus"></i> Nueva campaña</button>
+  </div>
+  <div class="cal-wrap">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+      <span class="cal-nav-title" id="cal-month-label"></span>
+      <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+    </div>
+    <div class="cal-grid" id="cal-grid">
+      <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div>
+      <div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
+    </div>
+  </div>
+</div>
+
+<!-- CAMPAÑAS -->
+<div class="panel" id="panel-camp">
+  <div class="filter-bar">
+    <select class="fsel" id="f-seg-camp" onchange="renderCamp()">
+      <option value="">Todos los segmentos</option>
+      <option value="Restaurantes">Restaurantes</option>
+      <option value="Heladería">Heladería</option>
+      <option value="Panadería">Panadería</option>
+      <option value="Pastelería">Pastelería</option>
+      <option value="Lavandería">Lavandería</option>
+      <option value="Tienda de conveniencia">Tienda de conveniencia</option>
+      <option value="Otros HORECA">Otros HORECA</option>
+      <option value="Fast Food">Fast Food</option>
+      <option value="Cadenas">Cadenas</option>
+      <option value="Hoteles">Hoteles</option>
+    </select>
+    <select class="fsel" id="f-status-camp" onchange="renderCamp()">
+      <option value="">Todos los estados</option>
+      <option value="borrador">Borrador</option>
+      <option value="produccion">En producción</option>
+      <option value="listo">Listo</option>
+      <option value="publicado">Publicado</option>
+    </select>
+    <input class="fsearch" type="text" id="f-search-camp" placeholder="🔍  Buscar campaña..." oninput="renderCamp()">
+    <button class="btn-add ml" onclick="openModal()"><i class="ti ti-plus"></i> Nueva campaña</button>
+  </div>
+  <div id="camp-list"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="panel" id="panel-dash">
+  <div class="dash-metrics" id="dash-metrics"></div>
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-title">Acciones por canal</div><div id="ch-canal"></div></div>
+    <div class="chart-card"><div class="chart-title">Por segmento HORECA</div><div class="seg-grid" id="ch-seg"></div></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-title">Por formato</div><div id="ch-fmt"></div></div>
+    <div class="chart-card"><div class="chart-title">Pipeline de campañas</div><div id="ch-status"></div></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- MODAL NUEVA CAMPAÑA -->
+<div class="overlay" id="overlay" onclick="closeOverlayOut(event)">
+<div class="modal">
+  <div class="modal-head">
+    <h3 id="modal-title">Nueva campaña 360</h3>
+    <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="modal-body">
+    <input type="hidden" id="edit-id">
+    <div>
+      <label class="flabel">Nombre de la campaña</label>
+      <input class="finput" type="text" id="f-nombre" placeholder="Ej: Lanzamiento línea heladería Mayo 2025">
+    </div>
+    <div>
+      <label class="flabel">Segmentos HORECA <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--n-lite)">(selecciona todos los que aplican)</span></label>
+      <div class="multi-check-grid" id="mc-segs"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;">
+      <div>
+        <label class="flabel">Estado general</label>
+        <select class="finput" id="f-status">
+          <option value="borrador">Borrador</option>
+          <option value="produccion">En producción</option>
+          <option value="listo">Listo</option>
+          <option value="publicado">Publicado</option>
+        </select>
+      </div>
+      <div>
+        <label class="flabel">Notas / briefing</label>
+        <input class="finput" type="text" id="f-notas" placeholder="Referencias, link brief, observaciones...">
+      </div>
+    </div>
+    <div>
+      <label class="flabel" style="margin-bottom:7px">
+        Acciones por canal y formato
+        <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--n-lite)"> — cada acción tiene su propia fecha de publicación</span>
+      </label>
+      <div class="accion-head">
+        <span class="accion-head-lbl">Canal</span>
+        <span class="accion-head-lbl">Formato</span>
+        <span class="accion-head-lbl">Fecha publicación</span>
+        <span class="accion-head-lbl">Responsable</span>
+        <span></span>
+      </div>
+      <div class="acciones-wrap" id="acciones-wrap"></div>
+      <button class="btn-add-ac" style="margin-top:5px" onclick="addAccionRow()">
+        <i class="ti ti-plus"></i> Agregar canal / formato
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+    <button class="btn-save" onclick="saveCamp()">Guardar campaña</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
+
+<script>
+const CANALES=[
+  {id:'igfb',label:'Instagram/FB', tagCls:'tag-igfb', chipCls:'c-igfb', color:'#C13584'},
+  {id:'mail',label:'Mail',         tagCls:'tag-mail',  chipCls:'c-mail',  color:'#15406B'},
+  {id:'paid',label:'Paid Media',   tagCls:'tag-paid',  chipCls:'c-paid',  color:'#3660E7'},
+  {id:'banner',label:'Banner web', tagCls:'tag-banner',chipCls:'c-banner',color:'#F27069'},
+  {id:'carweb',label:'Carrusel web',tagCls:'tag-carweb',chipCls:'c-carweb',color:'#388E3C'},
+];
+const FORMATOS=['Storie','Post','Reels','Video','Banner'];
+const SEGMENTOS=['Restaurantes','Heladería','Panadería','Pastelería','Lavandería','Tienda de conveniencia','Otros HORECA','Fast Food','Cadenas','Hoteles'];
+const STATUS_LABELS={borrador:'Borrador',produccion:'En producción',listo:'Listo',publicado:'Publicado'};
+const STATUS_COLORS={publicado:'var(--az-400)',listo:'#43A047',produccion:'#F9A825',borrador:'var(--n-lite)'};
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const cMap=Object.fromEntries(CANALES.map(c=>[c.id,c]));
+const SEG_SHORT={'Tienda de conveniencia':'Conv.','Otros HORECA':'Otros'};
+
+let currentDate=new Date();
+let activeTab='cal';
+let editingId=null;
+let nextId=1;
+let campaigns=[];
+
+// ── GOOGLE SHEETS LIVE SOURCE ──
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbykm5KuPoyD_qM6QH3HtFC5rlaa5B-7hGy_iIhbN_IcIwt250uagWlJRcC88y1wTj69/exec';
+
+function normalizeCanal(raw){
+  const v=raw.toLowerCase().trim();
+  if(v.includes('instagram')||v.includes('fb')||v.includes('igfb')) return 'igfb';
+  if(v.includes('paid')||v.includes('pago')||v.includes('sem')||v.includes('ads')) return 'paid';
+  if(v.includes('banner')) return 'banner';
+  if(v.includes('carrusel')||v.includes('carweb')||v.includes('web')) return 'carweb';
+  if(v.includes('mail')||v.includes('email')||v.includes('correo')) return 'mail';
+  return v;
+}
+
+function normalizeStatus(raw){
+  const v=(raw||'').toLowerCase().trim();
+  if(v.includes('producci')||v.includes('produccion')) return 'produccion';
+  if(v.includes('listo')||v.includes('ready')) return 'listo';
+  if(v.includes('publicado')||v.includes('published')) return 'publicado';
+  return 'borrador';
+}
+
+function normalizeFecha(raw){
+  if(!raw) return '';
+  const s=raw.toString().trim();
+  // Already ISO format
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // DD-MM-YYYY or DD/MM/YYYY
+  const m=s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+  if(m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  // Try native Date parse
+  const d=new Date(s);
+  if(!isNaN(d)) return d.toISOString().split('T')[0];
+  return s;
+}
+
+function parseSheetJSON(rows){
+  const map={};
+  nextId=1;
+  rows.forEach(r=>{
+    // Find campaign name — try common header names
+    const nombre=(r['campaña']||r['campana']||r['Campaña']||r['Campana']||r['campaign']||Object.values(r)[0]||'').toString().trim();
+    if(!nombre) return;
+    if(!map[nombre]){
+      const segRaw=(r['segmentos']||r['Segmentos']||r['segmento']||r['Segmento']||'').toString().trim();
+      map[nombre]={
+        id:nextId++, nombre,
+        segs: segRaw?segRaw.split('|').map(s=>s.trim()).filter(Boolean):[],
+        status: normalizeStatus(r['estado']||r['Estado']||r['status']||''),
+        notas:(r['notas']||r['Notas']||'').toString().trim(),
+        acciones:[]
+      };
+    }
+    const canalRaw=(r['canal']||r['Canal']||'').toString().trim();
+    if(canalRaw){
+      map[nombre].acciones.push({
+        canal: normalizeCanal(canalRaw),
+        formato:(r['formato']||r['Formato']||'Post').toString().trim(),
+        fecha: normalizeFecha(r['fecha']||r['Fecha']||''),
+        resp:(r['responsable']||r['Responsable']||'').toString().trim()
+      });
+    }
+  });
+  return Object.values(map);
+}
+
+function setLoading(on){
+  document.getElementById('total-badge').textContent=on?'Cargando datos...':'—';
+}
+
+function loadFromSheet(){
+  setLoading(true);
+  const old=document.getElementById('jsonp-script');
+  if(old) old.remove();
+  window._sheetCallback=function(rows){
+    try{
+      campaigns=parseSheetJSON(rows);
+      updateBadge();
+      renderCal();
+      if(activeTab==='camp') renderCamp();
+      if(activeTab==='dash') renderDash();
+    } catch(e){
+      console.error('Parse error:',e);
+      document.getElementById('total-badge').textContent='Error procesando datos';
+    }
+  };
+  const s=document.createElement('script');
+  s.id='jsonp-script';
+  s.src=APPS_SCRIPT_URL+'?callback=_sheetCallback&t='+Date.now();
+  s.onerror=function(){document.getElementById('total-badge').textContent='Error cargando datos';};
+  document.head.appendChild(s);
+}
+
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function fmtDate(iso){if(!iso)return'—';const d=new Date(iso+'T12:00:00');return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();}
+function updateBadge(){
+  const acc=campaigns.reduce((s,c)=>s+c.acciones.length,0);
+  document.getElementById('total-badge').textContent=campaigns.length+' campañas · '+acc+' acciones';
+}
+
+function switchTab(t){
+  activeTab=t;
+  ['cal','camp','dash'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+    document.getElementById('panel-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='cal') renderCal();
+  if(t==='camp') renderCamp();
+  if(t==='dash') renderDash();
+}
+
+// ── CALENDARIO ──
+function changeMonth(d){currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+d,1);renderCal();}
+
+function renderCal(){
+  const fCanal=document.getElementById('f-canal-cal').value;
+  const fSeg=document.getElementById('f-seg-cal').value;
+  const fFmt=document.getElementById('f-fmt-cal').value;
+  const year=currentDate.getFullYear(),month=currentDate.getMonth();
+  document.getElementById('cal-month-label').textContent=MESES[month]+' '+year;
+  const grid=document.getElementById('cal-grid');
+  while(grid.children.length>7) grid.removeChild(grid.lastChild);
+
+  const acciones=[];
+  campaigns.forEach(camp=>{
+    camp.acciones.forEach(a=>{
+      if(fCanal && a.canal!==fCanal) return;
+      if(fSeg && !camp.segs.includes(fSeg)) return;
+      if(fFmt && a.formato!==fFmt) return;
+      acciones.push({...a,campNombre:camp.nombre,campId:camp.id,campSegs:camp.segs});
+    });
+  });
+
+  const byDay={};
+  acciones.forEach(a=>{
+    const d=new Date(a.fecha+'T12:00:00');
+    if(d.getFullYear()===year && d.getMonth()===month){
+      const k=d.getDate();
+      if(!byDay[k]) byDay[k]=[];
+      byDay[k].push(a);
+    }
+  });
+
+  const firstDay=new Date(year,month,1).getDay();
+  const offset=firstDay===0?6:firstDay-1;
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const daysInPrev=new Date(year,month,0).getDate();
+  const today=new Date();
+  const totalCells=Math.ceil((offset+daysInMonth)/7)*7;
+
+  for(let i=0;i<totalCells;i++){
+    const div=document.createElement('div');
+    div.className='cal-day';
+    let dayNum,isOther=false;
+    if(i<offset){dayNum=daysInPrev-offset+i+1;isOther=true;}
+    else if(i>=offset+daysInMonth){dayNum=i-offset-daysInMonth+1;isOther=true;}
+    else{dayNum=i-offset+1;}
+    if(isOther) div.classList.add('other-month');
+    if(!isOther && dayNum===today.getDate() && month===today.getMonth() && year===today.getFullYear()) div.classList.add('today');
+
+    const numEl=document.createElement('div');
+    numEl.className='cal-day-num';
+    numEl.textContent=String(dayNum).padStart(2,'0');
+    div.appendChild(numEl);
+
+    if(!isOther && byDay[dayNum]){
+      const items=byDay[dayNum];
+      items.slice(0,2).forEach(a=>{
+        const cc=cMap[a.canal]||{label:a.canal,tagCls:'tag-seg',chipCls:'c-mail'};
+        const segLabel=a.campSegs.slice(0,2).map(s=>SEG_SHORT[s]||s).join(', ');
+        const chip=document.createElement('div');
+        chip.className='cal-chip '+cc.chipCls;
+        chip.title=a.campNombre+'\n'+cc.label+' · '+a.formato+'\nSegmentos: '+a.campSegs.join(', ');
+        chip.innerHTML=`<div class="cal-chip-inner">
+          <div class="cal-chip-title">${a.campNombre}</div>
+          <div class="cal-chip-tags">
+            <span class="cal-tag ${cc.tagCls}">${cc.label}</span>
+            <span class="cal-tag tag-fmt">${a.formato}</span>
+            <span class="cal-tag tag-seg">${segLabel}</span>
+          </div>
+        </div>`;
+        chip.onclick=e=>{e.stopPropagation();openEditCamp(a.campId);};
+        div.appendChild(chip);
+      });
+      if(items.length>2){
+        const m=document.createElement('span');
+        m.className='cal-more';
+        m.textContent='+'+(items.length-2)+' más';
+        div.appendChild(m);
+      }
+    }
+    if(!isOther) div.addEventListener('click',()=>openModal());
+    grid.appendChild(div);
+  }
+  updateBadge();
+}
+
+// ── CAMPAÑAS ──
+function renderCamp(){
+  const fSeg=document.getElementById('f-seg-camp').value;
+  const fStatus=document.getElementById('f-status-camp').value;
+  const fSearch=document.getElementById('f-search-camp').value.toLowerCase();
+  const filtered=campaigns.filter(c=>{
+    if(fSeg && !c.segs.includes(fSeg)) return false;
+    if(fStatus && c.status!==fStatus) return false;
+    if(fSearch && !c.nombre.toLowerCase().includes(fSearch)) return false;
+    return true;
+  });
+
+  const container=document.getElementById('camp-list');
+  if(!filtered.length){container.innerHTML='<div class="empty-state"><i class="ti ti-speakerphone"></i>No hay campañas con estos filtros</div>';return;}
+  container.innerHTML='';
+
+  filtered.forEach(camp=>{
+    const div=document.createElement('div');
+    div.className='camp-card';
+    div.id='camp-'+camp.id;
+    const accRows=camp.acciones.map(a=>{
+      const cc=cMap[a.canal]||{label:a.canal,tagCls:'tag-seg'};
+      return `<tr>
+        <td><span class="cal-tag ${cc.tagCls}" style="font-size:10px;padding:1px 7px;border-radius:3px">${cc.label}</span></td>
+        <td style="color:var(--n-dk2)">${a.formato}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--n-gray)">${fmtDate(a.fecha)}</td>
+        <td style="color:var(--n-gray)">${a.resp||'—'}</td>
+      </tr>`;
+    }).join('');
+
+    div.innerHTML=`<div class="camp-card-head" onclick="toggleCamp(${camp.id})">
+        <div class="status-dot sd-${camp.status}"></div>
+        <span class="camp-name">${camp.nombre}</span>
+        <div class="camp-segs">${camp.segs.map(s=>`<span class="seg-pill">${s}</span>`).join('')}</div>
+        <span class="camp-acc-count">${camp.acciones.length} acciones</span>
+        <span class="camp-status-lbl">${STATUS_LABELS[camp.status]}</span>
+        <i class="ti ti-chevron-right chevron"></i>
+      </div>
+      <div class="camp-body">
+        <table class="camp-act-table">
+          <thead><tr><th>Canal</th><th>Formato</th><th>Fecha</th><th>Responsable</th></tr></thead>
+          <tbody>${accRows}</tbody>
+        </table>
+        ${camp.notas?`<p style="font-size:11px;color:var(--n-gray);margin-top:8px;font-style:italic">📝 ${camp.notas}</p>`:''}
+        <div class="camp-footer">
+          <button class="btn-sm" onclick="openEditCamp(${camp.id})"><i class="ti ti-edit"></i> Editar</button>
+          <button class="btn-sm danger" onclick="deleteCamp(${camp.id})"><i class="ti ti-trash"></i> Eliminar</button>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleCamp(id){document.getElementById('camp-'+id)?.classList.toggle('open');}
+function deleteCamp(id){campaigns=campaigns.filter(c=>c.id!==id);renderCamp();updateBadge();showToast('Campaña eliminada');}
+
+// ── DASHBOARD ──
+function renderDash(){
+  const allAcc=campaigns.flatMap(c=>c.acciones.map(a=>({...a,segs:c.segs,status:c.status})));
+  const total=campaigns.length,totalAcc=allAcc.length;
+  const pub=campaigns.filter(c=>c.status==='publicado').length;
+  const lst=campaigns.filter(c=>c.status==='listo').length;
+  const prd=campaigns.filter(c=>c.status==='produccion').length;
+  const bor=campaigns.filter(c=>c.status==='borrador').length;
+
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="mc"><div class="mc-label">Campañas</div><div class="mc-val">${total}</div></div>
+    <div class="mc"><div class="mc-label">Acciones totales</div><div class="mc-val">${totalAcc}</div></div>
+    <div class="mc rc"><div class="mc-label">Publicadas</div><div class="mc-val">${pub}</div></div>
+    <div class="mc gr"><div class="mc-label">Listas</div><div class="mc-val">${lst}</div></div>
+    <div class="mc am"><div class="mc-label">En producción</div><div class="mc-val">${prd}</div></div>
+    <div class="mc"><div class="mc-label">Borradores</div><div class="mc-val">${bor}</div></div>
+  `;
+
+  const cCount={};
+  allAcc.forEach(a=>{cCount[a.canal]=(cCount[a.canal]||0)+1;});
+  const maxC=Math.max(...Object.values(cCount),1);
+  document.getElementById('ch-canal').innerHTML=CANALES.map(c=>`
+    <div class="bar-item">
+      <span class="bar-lbl">${c.label}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((cCount[c.id]||0)/maxC*100)}%;background:${c.color}"></div></div>
+      <span class="bar-cnt">${cCount[c.id]||0}</span>
+    </div>`).join('');
+
+  const sCount={};
+  campaigns.forEach(c=>c.segs.forEach(s=>{sCount[s]=(sCount[s]||0)+1;}));
+  document.getElementById('ch-seg').innerHTML=SEGMENTOS.map(s=>
+    `<div class="seg-item"><div class="seg-name">${SEG_SHORT[s]||s}</div><div class="seg-val">${sCount[s]||0}</div></div>`
+  ).join('');
+
+  const fCount={};
+  allAcc.forEach(a=>{fCount[a.formato]=(fCount[a.formato]||0)+1;});
+  const maxF=Math.max(...Object.values(fCount),1);
+  document.getElementById('ch-fmt').innerHTML=FORMATOS.map(f=>`
+    <div class="bar-item">
+      <span class="bar-lbl">${f}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((fCount[f]||0)/maxF*100)}%;background:var(--az-400)"></div></div>
+      <span class="bar-cnt">${fCount[f]||0}</span>
+    </div>`).join('');
+
+  document.getElementById('ch-status').innerHTML=['publicado','listo','produccion','borrador'].map(s=>{
+    const cnt=campaigns.filter(c=>c.status===s).length;
+    const pct=total>0?Math.round(cnt/total*100):0;
+    return `<div class="prog-item">
+      <div class="prog-label"><span>${STATUS_LABELS[s]}</span><span>${cnt} (${pct}%)</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${STATUS_COLORS[s]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODAL ──
+function buildMultiCheck(items, selected=[]){
+  const wrap=document.getElementById('mc-segs');
+  wrap.innerHTML='';
+  items.forEach(item=>{
+    const lbl=document.createElement('label');
+    lbl.className='mck'+(selected.includes(item)?' checked':'');
+    lbl.innerHTML=`<input type="checkbox" value="${item}"${selected.includes(item)?' checked':''}>${item}`;
+    lbl.querySelector('input').addEventListener('change',e=>lbl.classList.toggle('checked',e.target.checked));
+    wrap.appendChild(lbl);
+  });
+}
+function getChecked(){return[...document.querySelectorAll('#mc-segs input:checked')].map(el=>el.value);}
+
+function addAccionRow(canal='igfb',formato='Post',fecha='',resp=''){
+  const wrap=document.getElementById('acciones-wrap');
+  const row=document.createElement('div');
+  row.className='accion-row';
+  row.innerHTML=`
+    <select>${CANALES.map(c=>`<option value="${c.id}"${canal===c.id?' selected':''}>${c.label}</option>`).join('')}</select>
+    <select>${FORMATOS.map(f=>`<option${formato===f?' selected':''}>${f}</option>`).join('')}</select>
+    <input type="date" value="${fecha}">
+    <input type="text" placeholder="Responsable" value="${resp}">
+    <button class="btn-del-ac" onclick="this.closest('.accion-row').remove()" title="Eliminar acción"><i class="ti ti-x"></i></button>`;
+  wrap.appendChild(row);
+}
+function getAcciones(){
+  return[...document.querySelectorAll('.accion-row')].map(row=>{
+    const s=row.querySelectorAll('select');
+    const i=row.querySelectorAll('input');
+    return{canal:s[0].value,formato:s[1].value,fecha:i[0].value,resp:i[1].value};
+  });
+}
+
+function openModal(){
+  editingId=null;
+  document.getElementById('modal-title').textContent='Nueva campaña 360';
+  document.getElementById('f-nombre').value='';
+  document.getElementById('f-status').value='borrador';
+  document.getElementById('f-notas').value='';
+  buildMultiCheck(SEGMENTOS,[]);
+  document.getElementById('acciones-wrap').innerHTML='';
+  addAccionRow();
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('f-nombre').focus(),80);
+}
+
+function openEditCamp(id){
+  const camp=campaigns.find(c=>c.id===id);
+  if(!camp) return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='Editar campaña';
+  document.getElementById('f-nombre').value=camp.nombre;
+  document.getElementById('f-status').value=camp.status;
+  document.getElementById('f-notas').value=camp.notas||'';
+  buildMultiCheck(SEGMENTOS,camp.segs);
+  document.getElementById('acciones-wrap').innerHTML='';
+  camp.acciones.forEach(a=>addAccionRow(a.canal,a.formato,a.fecha,a.resp));
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');editingId=null;}
+function closeOverlayOut(e){if(e.target===document.getElementById('overlay'))closeModal();}
+
+function saveCamp(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  if(!nombre){document.getElementById('f-nombre').focus();return;}
+  const obj={nombre,segs:getChecked(),status:document.getElementById('f-status').value,notas:document.getElementById('f-notas').value.trim(),acciones:getAcciones()};
+  if(editingId){
+    const idx=campaigns.findIndex(c=>c.id===editingId);
+    if(idx>=0) campaigns[idx]={...campaigns[idx],...obj};
+    showToast('Campaña actualizada');
+  } else {
+    obj.id=nextId++;
+    campaigns.push(obj);
+    showToast('Campaña creada — '+obj.acciones.length+' acciones en el calendario');
+  }
+  closeModal();
+  if(activeTab==='cal') renderCal();
+  if(activeTab==='camp') renderCamp();
+  if(activeTab==='dash') renderDash();
+  updateBadge();
+}
+
+// ── EXPORT ──
+function exportCSV(){
+  const rows=['campaña\tsegmentos\testado\tcanal\tformato\tfecha\tresponsable\tnotas'];
+  campaigns.forEach(c=>c.acciones.forEach(a=>{
+    rows.push([c.nombre,c.segs.join('|'),c.status,a.canal,a.formato,a.fecha,a.resp||'',c.notas||''].join('\t'));
+  }));
+  const b=new Blob([rows.join('\n')],{type:'text/plain;charset=utf-8'});
+  const link=document.createElement('a');link.href=URL.createObjectURL(b);link.download='marsol_campanas.tsv';link.click();
+  showToast('Exportado — ábrelo en Google Sheets con Archivo > Importar');
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+// Load from Google Sheets on start
+loadFromSheet();
+</script>
+</body>
+</html>
